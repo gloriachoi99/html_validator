@@ -10,6 +10,24 @@ def validate_html(html):
     >>> validate_html('<strong>example')
     False
     '''
+    s = []
+    balanced = True
+    tags = _extract_tags(html)
+    for i in range(len(tags)):
+        singletag = tags[i]
+        if '/' not in singletag: # if not a closing tag
+            s.append(singletag)
+        else:                    # if a closing tag
+            if s == []:
+                balanced = False
+            else:
+                top = s.pop()
+                if top[1:] != singletag[2:]:  # if the tags do not match
+                    balanced = False # not a match
+    if balanced and s == []:
+        return True
+    else:
+        return False
 
     # HINT:
     # use the _extract_tags function below to generate a list of html tags without any extra text;
@@ -29,3 +47,17 @@ def _extract_tags(html):
     >>> _extract_tags('Python <strong>rocks</strong>!')
     ['<strong>', '</strong>']
     '''
+    list = []
+    for i in range(len(html)-1):
+        str = ""
+        if html[i] == "<":
+            str += html[i]
+            i += 1
+            while html[i] != ">" and i < len(html)-1:
+                str += html[i]
+                i += 1
+            tag = str + ">"
+            list.append(tag)
+    return list
+
+
